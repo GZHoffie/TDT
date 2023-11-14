@@ -1,0 +1,1 @@
+datasets download genome taxon 286 --reference --filename pseudomonas_dataset.zip
