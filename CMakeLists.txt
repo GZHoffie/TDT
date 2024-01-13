@@ -23,3 +23,7 @@ FetchContent_MakeAvailable(sharg)
 set(BUILD_FILES
     compressor/bucket_index.hpp)
 
+# build dataset generating tools
+add_executable(test main.cpp ${BUILD_FILES})
+target_link_libraries(test PUBLIC seqan3::seqan3)
+

@@ -1,0 +1,46 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "/home/zhenhao/TDT/build/_deps/sharg-subbuild/CMakeFiles/sharg-populate"
+		},
+		{
+			"file" : "/home/zhenhao/TDT/build/_deps/sharg-subbuild/CMakeFiles/sharg-populate.rule"
+		},
+		{
+			"file" : "/home/zhenhao/TDT/build/_deps/sharg-subbuild/CMakeFiles/sharg-populate-complete.rule"
+		},
+		{
+			"file" : "/home/zhenhao/TDT/build/_deps/sharg-subbuild/sharg-populate-prefix/src/sharg-populate-stamp/sharg-populate-build.rule"
+		},
+		{
+			"file" : "/home/zhenhao/TDT/build/_deps/sharg-subbuild/sharg-populate-prefix/src/sharg-populate-stamp/sharg-populate-configure.rule"
+		},
+		{
+			"file" : "/home/zhenhao/TDT/build/_deps/sharg-subbuild/sharg-populate-prefix/src/sharg-populate-stamp/sharg-populate-download.rule"
+		},
+		{
+			"file" : "/home/zhenhao/TDT/build/_deps/sharg-subbuild/sharg-populate-prefix/src/sharg-populate-stamp/sharg-populate-install.rule"
+		},
+		{
+			"file" : "/home/zhenhao/TDT/build/_deps/sharg-subbuild/sharg-populate-prefix/src/sharg-populate-stamp/sharg-populate-mkdir.rule"
+		},
+		{
+			"file" : "/home/zhenhao/TDT/build/_deps/sharg-subbuild/sharg-populate-prefix/src/sharg-populate-stamp/sharg-populate-patch.rule"
+		},
+		{
+			"file" : "/home/zhenhao/TDT/build/_deps/sharg-subbuild/sharg-populate-prefix/src/sharg-populate-stamp/sharg-populate-test.rule"
+		},
+		{
+			"file" : "/home/zhenhao/TDT/build/_deps/sharg-subbuild/sharg-populate-prefix/src/sharg-populate-stamp/sharg-populate-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"sharg-populate"
+		],
+		"name" : "sharg-populate"
+	}
+}

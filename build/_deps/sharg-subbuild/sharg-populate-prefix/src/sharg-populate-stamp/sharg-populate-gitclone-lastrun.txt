@@ -1,0 +1,3 @@
+repository='https://github.com/seqan/sharg-parser.git'
+module=''
+tag='origin'

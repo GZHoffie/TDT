@@ -1,0 +1,1 @@
+/usr/bin/g++  -O3 -g CMakeFiles/test.dir/main.cpp.o -o test  /usr/lib/x86_64-linux-gnu/libz.so -lrt 

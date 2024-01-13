@@ -1,0 +1,124 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"install",
+			"include"
+		],
+		"files" : 
+		[
+			"build/_deps/seqan3-src/build_system/seqan3-install.cmake",
+			"build/_deps/seqan3-src/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 1
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 37,
+				"parent" : 0
+			},
+			{
+				"file" : 0,
+				"parent" : 1
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 15,
+				"parent" : 2
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 23,
+				"parent" : 2
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 28,
+				"parent" : 2
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 39,
+				"parent" : 2
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 39,
+				"parent" : 2
+			}
+		]
+	},
+	"installers" : 
+	[
+		{
+			"backtrace" : 3,
+			"component" : "Unspecified",
+			"destination" : "share/doc/seqan3",
+			"paths" : 
+			[
+				"build/_deps/seqan3-src/CHANGELOG.md",
+				"build/_deps/seqan3-src/CODE_OF_CONDUCT.md",
+				"build/_deps/seqan3-src/CONTRIBUTING.md",
+				"build/_deps/seqan3-src/LICENSE.md",
+				"build/_deps/seqan3-src/README.md"
+			],
+			"type" : "file"
+		},
+		{
+			"backtrace" : 4,
+			"component" : "Unspecified",
+			"destination" : "share/cmake/seqan3",
+			"paths" : 
+			[
+				"build/_deps/seqan3-src/build_system/seqan3-config.cmake",
+				"build/_deps/seqan3-src/build_system/seqan3-config-version.cmake"
+			],
+			"type" : "file"
+		},
+		{
+			"backtrace" : 5,
+			"component" : "Unspecified",
+			"destination" : "include",
+			"paths" : 
+			[
+				"build/_deps/seqan3-src/include/seqan3"
+			],
+			"type" : "directory"
+		},
+		{
+			"backtrace" : 6,
+			"component" : "Unspecified",
+			"destination" : "include/seqan3/submodules/sdsl-lite",
+			"paths" : 
+			[
+				"build/_deps/seqan3-src/submodules/sdsl-lite/include"
+			],
+			"type" : "directory"
+		},
+		{
+			"backtrace" : 7,
+			"component" : "Unspecified",
+			"destination" : "include/seqan3/submodules/cereal",
+			"paths" : 
+			[
+				"build/_deps/seqan3-src/submodules/cereal/include"
+			],
+			"type" : "directory"
+		}
+	],
+	"paths" : 
+	{
+		"build" : "_deps/seqan3-build",
+		"source" : "build/_deps/seqan3-src"
+	}
+}

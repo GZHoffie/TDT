@@ -1,0 +1,46 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "/home/zhenhao/TDT/build/_deps/seqan3-subbuild/CMakeFiles/seqan3-populate"
+		},
+		{
+			"file" : "/home/zhenhao/TDT/build/_deps/seqan3-subbuild/CMakeFiles/seqan3-populate.rule"
+		},
+		{
+			"file" : "/home/zhenhao/TDT/build/_deps/seqan3-subbuild/CMakeFiles/seqan3-populate-complete.rule"
+		},
+		{
+			"file" : "/home/zhenhao/TDT/build/_deps/seqan3-subbuild/seqan3-populate-prefix/src/seqan3-populate-stamp/seqan3-populate-build.rule"
+		},
+		{
+			"file" : "/home/zhenhao/TDT/build/_deps/seqan3-subbuild/seqan3-populate-prefix/src/seqan3-populate-stamp/seqan3-populate-configure.rule"
+		},
+		{
+			"file" : "/home/zhenhao/TDT/build/_deps/seqan3-subbuild/seqan3-populate-prefix/src/seqan3-populate-stamp/seqan3-populate-download.rule"
+		},
+		{
+			"file" : "/home/zhenhao/TDT/build/_deps/seqan3-subbuild/seqan3-populate-prefix/src/seqan3-populate-stamp/seqan3-populate-install.rule"
+		},
+		{
+			"file" : "/home/zhenhao/TDT/build/_deps/seqan3-subbuild/seqan3-populate-prefix/src/seqan3-populate-stamp/seqan3-populate-mkdir.rule"
+		},
+		{
+			"file" : "/home/zhenhao/TDT/build/_deps/seqan3-subbuild/seqan3-populate-prefix/src/seqan3-populate-stamp/seqan3-populate-patch.rule"
+		},
+		{
+			"file" : "/home/zhenhao/TDT/build/_deps/seqan3-subbuild/seqan3-populate-prefix/src/seqan3-populate-stamp/seqan3-populate-test.rule"
+		},
+		{
+			"file" : "/home/zhenhao/TDT/build/_deps/seqan3-subbuild/seqan3-populate-prefix/src/seqan3-populate-stamp/seqan3-populate-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"seqan3-populate"
+		],
+		"name" : "seqan3-populate"
+	}
+}
