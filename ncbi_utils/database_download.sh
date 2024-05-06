@@ -1,6 +1,17 @@
 mkdir -p data
 cd data
-datasets download genome taxon 562 --reference --filename pseudomonas_dataset.zip
-unzip pseudomonas_dataset.zip
-cat ncbi_dataset/data/*/*.fna >> 562.fna
-rm -r ncbi_dataset pseudomonas_dataset.zip README.md
+taxid=286
+datasets download genome taxon $taxid --reference --filename ${taxid}.zip
+if [ -f ${taxid}.zip ]; then
+    unzip ${taxid}.zip
+    cat ncbi_dataset/data/*/*.fna >> ${taxid}.fna
+    rm -r ncbi_dataset ${taxid}.zip README.md
+fi
+
+accession=GCA_002878375.1
+datasets download genome accession $accession --reference --filename ${accession}.zip
+if [ -f ${accession}.zip ]; then
+    unzip ${accession}.zip
+    cat ncbi_dataset/data/*/*.fna >> ${accession}.fna
+    rm -r ncbi_dataset ${accession}.zip README.md
+fi
