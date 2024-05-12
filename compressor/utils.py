@@ -5,6 +5,7 @@ import json
 import os
 from queue import PriorityQueue
 import networkx as nx
+import numpy as np
 from Bio import SeqIO
 
 
@@ -136,40 +137,97 @@ class Seq2Tokens:
 
         return tokens
     
+    def init_vocab(self, condition):
+        MASK = 3 # Mask to filter out single nucleotide in k-mer
+        vocab = {}
+        vocab_index = 0
+        for i in tqdm(range(4 ** self._k), desc=f"[INFO]\t\tBuilding up vocabulary using {self._k}-mers"):
+            kmer_sequence = [(i >> (j * 2)) & MASK for j in reversed(range(self._k))]
+            rev_comp_sequence = self._rev_comp(kmer_sequence)
 
-class Seq2Graph:
+            kmer_hash = 0
+            rev_comp_hash = 0
+            for i in range(self._k):
+                kmer_hash = kmer_hash << 2
+                rev_comp_hash = rev_comp_hash << 2
+                kmer_hash = kmer_hash | kmer_sequence[i]
+                rev_comp_hash = rev_comp_hash | rev_comp_sequence[i]
+        
+            # Pick the canonical k-mer only
+            min_hash = kmer_hash if kmer_hash < rev_comp_hash else rev_comp_hash
+            if condition(min_hash) and min_hash not in vocab:
+                vocab[min_hash] = vocab_index
+                vocab_index += 1
+        
 
-    def __init__(self, condition_function, seed_length, window_length) -> None:
+        #print(vocab)
+        print(f"[INFO]\t\tVocabulary build complete. Vocab size: {len(vocab)}.")
+        return vocab, len(vocab)
+
+
+
+import pickle
+
+class FMHSignature:
+    def __init__(self, condition_function, seed_length, window_length, read_from_file=None) -> None:
         self.con = condition_function
         self.tokenizer = Seq2Tokens(seed_length, window_length)
-        self.graph = nx.MultiDiGraph()
-    
-
-    def _insert_sequence(self, sequence, sequence_id):
-        kmers = self.tokenizer.canonical_kmers(sequence)
-        filtered_kmers = [i for i in kmers if self.con(i)]
-        edges = []
-        for i in range(len(filtered_kmers) - 1):
-            edges.append((filtered_kmers[i], filtered_kmers[i+1], dict(id=sequence_id)))
-        print(len(kmers), len(edges))
-        
-        dup_edges = 0
-        for e in edges:
-            if self.graph.has_edge(e[0], e[1]):
-                dup_edges += 1
-            
-        print(dup_edges)
-        
-        self.graph.add_edges_from(edges)
+        if read_from_file is None:
+            self.kmer_dict, self.kmer_num = self.tokenizer.init_vocab(self.con)
+        else:
+            self.load_vocab(read_from_file)
             
     
 
-    def insert_all_sequences_in_file(self, file_name):
+    def _to_signature(self, sequences, data_type=bool):
+        signature = np.zeros(self.kmer_num, dtype=data_type)
+        for sequence in sequences:
+            kmers = self.tokenizer.canonical_kmers(sequence)
+            for kmer in kmers:
+                if kmer in self.kmer_dict:
+                    signature[self.kmer_dict[kmer]] = 1
 
-        for record in SeqIO.parse(file_name, "fasta"):
-            acc = record.id.split(" ")[0]
-            self._insert_sequence(str(record.seq), acc)
-            print(len(sg.graph.nodes))
+        print(signature, signature.sum())
+        return signature
+    
+    def store_vocab(self, file_name):
+        with open(file_name, 'wb') as f:
+            pickle.dump(self.kmer_dict, f)
+    
+
+    def load_vocab(self, file_name):
+        with open(file_name, 'rb') as f:
+            self.kmer_dict = pickle.load(f)
+        
+        self.kmer_num = len(set(self.kmer_dict.values()))
+    
+
+    def _find_consensus_in_genus(self, files):
+        """
+        Assuming the name of file is the taxid.
+        """
+        from pathlib import Path
+
+        genus_signature = np.zeros(self.kmer_num, dtype=np.int16)
+
+        # Attempt: simply sum up all the signatures, take
+        # the ones that are shared among 80% of the species
+        for f in files:
+            taxid = int(Path(f).stem)
+            sequences = []
+            for record in SeqIO.parse(f, "fasta"):
+                sequences.append(str(record.seq))
+            
+            signature = self._to_signature(sequences, data_type=np.int16)
+            print(signature.dtype)
+            genus_signature += signature
+        
+        print(genus_signature)
+        print((genus_signature >= 2).sum())
+
+            
+    
+        
     
 
 if __name__ == "__main__":
@@ -180,11 +238,15 @@ if __name__ == "__main__":
         else:
             return False
         
-    sg = Seq2Graph(fracMinHash, 12, 12)
-    sg.insert_all_sequences_in_file("./data/485870.fna")
+    sg = FMHSignature(fracMinHash, 12, 12, "12-mer.pkl")
+    #sg.store_vocab("12-mer.pkl")
+    #print("562")
+    #sg.insert_all_sequences_in_file("./data/562.fna")
+    #print("564")
+    sg._find_consensus_in_genus(["./data/562.fna", "./data/564.fna", "./data/208962.fna"])
     #print(len(sg.graph.nodes))
-    
-    sg.insert_all_sequences_in_file("./data/2745495.fna")
+    #print("485870")
+    #sg.insert_all_sequences_in_file("./data/485870.fna")
 
     #print(len(sg.graph.nodes))
 
