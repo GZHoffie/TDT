@@ -209,21 +209,22 @@ class FMHSignature:
         from pathlib import Path
 
         genus_signature = np.zeros(self.kmer_num, dtype=np.int16)
+        signature_storage = [] # FOR DEBUG
 
         # Attempt: simply sum up all the signatures, take
         # the ones that are shared among 80% of the species
-        for f in files:
+        for f in tqdm(files):
             taxid = int(Path(f).stem)
             sequences = []
             for record in SeqIO.parse(f, "fasta"):
                 sequences.append(str(record.seq))
             
             signature = self._to_signature(sequences, data_type=np.int16)
-            print(signature.dtype)
             genus_signature += signature
+            signature_storage.append(np.array(signature, dtype=bool)) # FOR DEBUG
         
-        print(genus_signature)
-        print((genus_signature >= 2).sum())
+
+        return genus_signature, signature_storage
 
             
     
@@ -231,6 +232,8 @@ class FMHSignature:
     
 
 if __name__ == "__main__":
+    import glob
+
     def fracMinHash(kmer_hash):
         hash = (976369 * kmer_hash + 1982627) % 10000
         if hash <= 10:
@@ -243,7 +246,7 @@ if __name__ == "__main__":
     #print("562")
     #sg.insert_all_sequences_in_file("./data/562.fna")
     #print("564")
-    sg._find_consensus_in_genus(["./data/562.fna", "./data/564.fna", "./data/208962.fna"])
+    sg._find_consensus_in_genus(glob.glob("./data/escherichia/*.fna"))
     #print(len(sg.graph.nodes))
     #print("485870")
     #sg.insert_all_sequences_in_file("./data/485870.fna")
