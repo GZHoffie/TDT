@@ -21,10 +21,10 @@ class Seq2Tokens:
             The unknown token to be used by the model.
     """
 
-    def __init__(self, seed_length, window_length, use_mask=True):
+    def __init__(self, seed_length, window_length=None, use_mask=True):
         # Initialize parameters for the minimizer.
         self._k = seed_length
-        self._l = window_length
+        self._l = window_length if window_length is not None else seed_length
 
         if (self._l < self._k):
             print(f"[ERROR]\t\tthe window length (currently {self._l}) must be equal or larger than the seed length (currently {self._k}).")
@@ -169,7 +169,7 @@ class Seq2Tokens:
 import pickle
 
 class FMHSignature:
-    def __init__(self, condition_function, seed_length, window_length, read_from_file=None) -> None:
+    def __init__(self, condition_function, seed_length, window_length=None, read_from_file=None) -> None:
         self.con = condition_function
         self.tokenizer = Seq2Tokens(seed_length, window_length)
         if read_from_file is None:
@@ -187,7 +187,7 @@ class FMHSignature:
                 if kmer in self.kmer_dict:
                     signature[self.kmer_dict[kmer]] = 1
 
-        print(signature, signature.sum())
+        #print(signature, signature.sum())
         return signature
     
     def store_vocab(self, file_name):
@@ -209,7 +209,7 @@ class FMHSignature:
         from pathlib import Path
 
         genus_signature = np.zeros(self.kmer_num, dtype=np.int16)
-        signature_storage = [] # FOR DEBUG
+        #signature_storage = [] # FOR DEBUG
 
         # Attempt: simply sum up all the signatures, take
         # the ones that are shared among 80% of the species
@@ -221,10 +221,10 @@ class FMHSignature:
             
             signature = self._to_signature(sequences, data_type=np.int16)
             genus_signature += signature
-            signature_storage.append(np.array(signature, dtype=bool)) # FOR DEBUG
+            #signature_storage.append(np.array(signature, dtype=bool)) # FOR DEBUG
         
 
-        return genus_signature, signature_storage
+        return genus_signature#, signature_storage
 
             
     

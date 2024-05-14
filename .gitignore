@@ -1,3 +1,4 @@
 data/*
 build
 __pycache__
+data_temp
