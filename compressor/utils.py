@@ -4,7 +4,6 @@ from tqdm import tqdm
 import json
 import os
 from queue import PriorityQueue
-import networkx as nx
 import numpy as np
 from Bio import SeqIO
 
@@ -208,6 +207,8 @@ class FMHSignature:
         """
         from pathlib import Path
 
+        #print(files)
+
         genus_signature = np.zeros(self.kmer_num, dtype=np.int16)
         #signature_storage = [] # FOR DEBUG
 
@@ -223,6 +224,8 @@ class FMHSignature:
             genus_signature += signature
             #signature_storage.append(np.array(signature, dtype=bool)) # FOR DEBUG
         
+        #print(genus_signature, genus_signature.sum())
+        
 
         return genus_signature#, signature_storage
 
@@ -236,17 +239,17 @@ if __name__ == "__main__":
 
     def fracMinHash(kmer_hash):
         hash = (976369 * kmer_hash + 1982627) % 10000
-        if hash <= 10:
+        if hash < 100:
             return True
         else:
             return False
         
-    sg = FMHSignature(fracMinHash, 12, 12, "12-mer.pkl")
-    #sg.store_vocab("12-mer.pkl")
+    sg = FMHSignature(fracMinHash, 12)
+    sg.store_vocab("12-mer.pkl")
     #print("562")
     #sg.insert_all_sequences_in_file("./data/562.fna")
     #print("564")
-    sg._find_consensus_in_genus(glob.glob("./data/escherichia/*.fna"))
+    #sg._find_consensus_in_genus(glob.glob("./data/escherichia/*.fna"))
     #print(len(sg.graph.nodes))
     #print("485870")
     #sg.insert_all_sequences_in_file("./data/485870.fna")

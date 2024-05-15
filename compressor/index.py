@@ -5,7 +5,8 @@ import os
 import glob
 from tqdm import tqdm
 import pandas as pd
-
+import pickle
+from multiprocessing import Process, Queue, Pool
 
 class SignatureIndex:
     def __init__(self, condition_function, k=12, p_value=0.05, kmer_file=None) -> None:
@@ -46,15 +47,17 @@ class SignatureIndex:
         Given a list of accession, determine the signature.
         """
         # Download the reference corresponding to the accession
-        directory = "/home/zhenhao/TDT/data_temp/"
+        directory = "/home/zhenhao/TDT/data_temp/" + str(int(genus_id))
 
-        for accession, taxid in tqdm(zip(accession_list, taxid_list), desc="Downloading references for genus " + str(genus_id)):
+        for accession, taxid in tqdm(zip(accession_list, taxid_list), desc="Downloading references for genus " + str(int(genus_id))):
             self._download_reference(accession, directory, str(taxid))
 
-        res = self.signature._find_consensus_in_genus(glob.glob(directory + "*.fna"))
+        #print(glob.glob(directory + "/*.fna"))
+
+        res = self.signature._find_consensus_in_genus(glob.glob(directory + "/*.fna"))
         self._remove_directory(directory)
 
-        return res
+        return genus_id, res
 
     def find_all_signatures(self, metadata_df, num_samples=None):
         """
@@ -65,7 +68,9 @@ class SignatureIndex:
         """
         res = {}
         genus_set = set(metadata_df.dropna(subset=['genus_taxid'])['genus_taxid'])
-        for genus in genus_set:
+        argument_list = []
+        for i, genus in enumerate(genus_set):
+            print("Processing genus", i+1, "/", len(genus_set))
             # sample just one genome per species
             genus_df = metadata_df[metadata_df["genus_taxid"] == genus].groupby("species_taxid").sample(1)
 
@@ -74,9 +79,18 @@ class SignatureIndex:
                 genus_df = genus_df.sample(num_samples)
             
             # Download the references
-            signature = self.find_signature(genus_df["ncbi_genbank_assembly_accession"],
-                                            genus_df["species_taxid"], genus)
-            res[genus] = signature
+            argument_list.append((genus_df["ncbi_genbank_assembly_accession"],
+                                  genus_df["species_taxid"], genus))
+            #signature = self.find_signature(genus_df["ncbi_genbank_assembly_accession"],
+            #                                genus_df["species_taxid"], genus)
+            #res[genus] = signature
+        #return res
+
+        # Use multiprocessing
+        print("Using", os.cpu_count(), "CPUs.")
+        pool = Pool(os.cpu_count())
+        res = pool.starmap(self.find_signature, argument_list)
+        
         return res
             
 
@@ -84,10 +98,10 @@ class SignatureIndex:
 
 
 if __name__ == "__main__":
-    metadata_df = pd.read_csv("./gtdb_utils/metadata.csv")
+    metadata_df = pd.read_csv("./gtdb_utils/metadata_sample.csv")
     def fracMinHash(kmer_hash):
         hash = (976369 * kmer_hash + 1982627) % 10000
-        if hash <= 10:
+        if hash < 100:
             return True
         else:
             return False
@@ -95,9 +109,8 @@ if __name__ == "__main__":
     si = SignatureIndex(fracMinHash, 12, kmer_file="/home/zhenhao/TDT/12-mer.pkl")
     res = si.find_all_signatures(metadata_df, num_samples=100)
 
-    import json
-    with open("signature.json", 'w') as f:
-        json.dump(res, f)
+    with open("/home/zhenhao/TDT/signature.pkl", 'wb') as f:
+        pickle.dump(res, f)
 
         
 
