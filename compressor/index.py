@@ -49,8 +49,8 @@ class SignatureIndex:
         # Download the reference corresponding to the accession
         directory = "/home/zhenhao/TDT/data_temp/" + str(tax_id)
 
-        for accession, taxid in tqdm(zip(accession_list, taxid_list), desc="Downloading references for genus " + str(tax_id)):
-            self._download_reference(accession, directory, str(taxid))
+        for i, accession in tqdm(enumerate(accession_list), desc="Downloading references for genus " + str(tax_id)):
+            self._download_reference(accession, directory, str(i))
 
         #print(glob.glob(directory + "/*.fna"))
 
@@ -72,7 +72,7 @@ class SignatureIndex:
         for i, family in enumerate(family_set):
             print("Processing family", i+1, "/", len(family_set))
             # sample just one genome per species
-            family_df = metadata_df[metadata_df["family_taxid"] == family]#.groupby("species_name").sample(1)
+            family_df = metadata_df[metadata_df["family_taxid"] == family].groupby("species_name").sample(1)
 
             # if there are more than `num_samples` species, sample only `num_samples` of them
             if num_samples is not None and len(family_df) > num_samples:
@@ -101,12 +101,12 @@ if __name__ == "__main__":
     metadata_df = pd.read_csv("./gtdb_utils/metadata_sample.csv")
     def fracMinHash(kmer_hash):
         hash = (976369 * kmer_hash + 1982627) % 10000
-        if hash < 500:
+        if hash < 100:
             return True
         else:
             return False
     
-    si = SignatureIndex(fracMinHash, 12, kmer_file="/home/zhenhao/TDT/12-mer.pkl")
+    si = SignatureIndex(fracMinHash, 12, kmer_file="/home/zhenhao/TDT/13-mer.pkl")
     res = si.find_all_signatures(metadata_df, num_samples=200)
 
     with open("/home/zhenhao/TDT/signature.pkl", 'wb') as f:
