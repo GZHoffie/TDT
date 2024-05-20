@@ -244,8 +244,8 @@ if __name__ == "__main__":
         else:
             return False
         
-    sg = FMHSignature(fracMinHash, 12)
-    sg.store_vocab("12-mer.pkl")
+    sg = FMHSignature(fracMinHash, 13)
+    sg.store_vocab("13-mer.pkl")
     #print("562")
     #sg.insert_all_sequences_in_file("./data/562.fna")
     #print("564")

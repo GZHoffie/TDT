@@ -2,3 +2,4 @@ data/*
 build
 __pycache__
 data_temp
+metadata_sample.csv

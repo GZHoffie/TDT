@@ -42,14 +42,14 @@ class SignatureIndex:
         subprocess.run(["rm", "-r", directory], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 
-    def find_signature(self, accession_list, taxid_list, genus_id):
+    def find_signature(self, accession_list, taxid_list, tax_id):
         """
         Given a list of accession, determine the signature.
         """
         # Download the reference corresponding to the accession
-        directory = "/home/zhenhao/TDT/data_temp/" + str(int(genus_id))
+        directory = "/home/zhenhao/TDT/data_temp/" + str(tax_id)
 
-        for accession, taxid in tqdm(zip(accession_list, taxid_list), desc="Downloading references for genus " + str(int(genus_id))):
+        for accession, taxid in tqdm(zip(accession_list, taxid_list), desc="Downloading references for genus " + str(tax_id)):
             self._download_reference(accession, directory, str(taxid))
 
         #print(glob.glob(directory + "/*.fna"))
@@ -57,7 +57,7 @@ class SignatureIndex:
         res = self.signature._find_consensus_in_genus(glob.glob(directory + "/*.fna"))
         self._remove_directory(directory)
 
-        return genus_id, res
+        return tax_id, res
 
     def find_all_signatures(self, metadata_df, num_samples=None):
         """
@@ -67,20 +67,20 @@ class SignatureIndex:
         For each genera, only take `num_samples` species to speed things up.
         """
         res = {}
-        genus_set = set(metadata_df.dropna(subset=['genus_taxid'])['genus_taxid'])
+        family_set = set(metadata_df.dropna(subset=['family_taxid'])['family_taxid'])
         argument_list = []
-        for i, genus in enumerate(genus_set):
-            print("Processing genus", i+1, "/", len(genus_set))
+        for i, family in enumerate(family_set):
+            print("Processing family", i+1, "/", len(family_set))
             # sample just one genome per species
-            genus_df = metadata_df[metadata_df["genus_taxid"] == genus].groupby("species_taxid").sample(1)
+            family_df = metadata_df[metadata_df["family_taxid"] == family]#.groupby("species_name").sample(1)
 
             # if there are more than `num_samples` species, sample only `num_samples` of them
-            if num_samples is not None and len(genus_df) > num_samples:
-                genus_df = genus_df.sample(num_samples)
+            if num_samples is not None and len(family_df) > num_samples:
+                family_df = family_df.sample(num_samples)
             
             # Download the references
-            argument_list.append((genus_df["ncbi_genbank_assembly_accession"],
-                                  genus_df["species_taxid"], genus))
+            argument_list.append((family_df["ncbi_genbank_assembly_accession"],
+                                  family_df["species_taxid"], family))
             #signature = self.find_signature(genus_df["ncbi_genbank_assembly_accession"],
             #                                genus_df["species_taxid"], genus)
             #res[genus] = signature
@@ -101,13 +101,13 @@ if __name__ == "__main__":
     metadata_df = pd.read_csv("./gtdb_utils/metadata_sample.csv")
     def fracMinHash(kmer_hash):
         hash = (976369 * kmer_hash + 1982627) % 10000
-        if hash < 100:
+        if hash < 500:
             return True
         else:
             return False
     
     si = SignatureIndex(fracMinHash, 12, kmer_file="/home/zhenhao/TDT/12-mer.pkl")
-    res = si.find_all_signatures(metadata_df, num_samples=100)
+    res = si.find_all_signatures(metadata_df, num_samples=200)
 
     with open("/home/zhenhao/TDT/signature.pkl", 'wb') as f:
         pickle.dump(res, f)
