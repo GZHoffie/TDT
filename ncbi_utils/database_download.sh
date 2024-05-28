@@ -1,6 +1,6 @@
 mkdir -p data
 cd data
-taxid=564
+taxid=561
 datasets download genome taxon $taxid --reference --filename ${taxid}.zip
 if [ -f ${taxid}.zip ]; then
     unzip ${taxid}.zip
@@ -8,7 +8,7 @@ if [ -f ${taxid}.zip ]; then
     rm -r ncbi_dataset ${taxid}.zip README.md
 fi
 
-accession=GCF_021035625.1
+accession=GCA_000190495.1
 datasets download genome accession $accession --reference --filename ${accession}.zip
 if [ -f ${accession}.zip ]; then
     unzip ${accession}.zip
