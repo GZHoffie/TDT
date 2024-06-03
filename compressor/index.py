@@ -1,4 +1,4 @@
-import compressor.utils
+import compressor.signature
 from pathlib import Path
 import subprocess
 import os
@@ -8,9 +8,11 @@ import pandas as pd
 import pickle
 from multiprocessing import Process, Queue, Pool
 
+import compressor.utils
+
 class SignatureIndex:
     def __init__(self, condition_function, k=12, p_value=0.05, kmer_file=None) -> None:
-        self.signature = compressor.utils.FMHSignature(condition_function, k, read_from_file=kmer_file)
+        self.signature = compressor.signature.FMHSignature(condition_function, k, read_from_file=kmer_file)
     
     def _download_reference(self, accession, directory, taxid):
         """
@@ -54,7 +56,7 @@ class SignatureIndex:
 
         #print(glob.glob(directory + "/*.fna"))
 
-        res = self.signature._find_consensus_in_genus(glob.glob(directory + "/*.fna"))
+        res = self.signature.find_consensus(files=glob.glob(directory + "/*.fna"))
         self._remove_directory(directory)
 
         return tax_id, res
@@ -94,6 +96,10 @@ class SignatureIndex:
         return res
             
 
+class MLSignatureIndex(SignatureIndex):
+    def __init__(self, condition_function, k=12, p_value=0.05, kmer_file=None) -> None:
+        #super().__init__(condition_function, k, p_value, kmer_file)
+        self.signature = compressor.signature.MLSignature(condition_function, k, read_from_file=kmer_file)
         
 
 
