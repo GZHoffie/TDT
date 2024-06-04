@@ -51,13 +51,14 @@ class SignatureIndex:
         # Download the reference corresponding to the accession
         directory = "/home/zhenhao/TDT/data_temp/" + str(tax_id)
 
-        for i, accession in tqdm(enumerate(accession_list), desc="Downloading references for genus " + str(tax_id)):
-            self._download_reference(accession, directory, str(i))
+        #for i, accession in tqdm(enumerate(accession_list), desc="Downloading references for genus " + str(tax_id)):
+        #    self._download_reference(accession, directory, str(i))
 
         #print(glob.glob(directory + "/*.fna"))
 
         res = self.signature.find_consensus(files=glob.glob(directory + "/*.fna"))
-        self._remove_directory(directory)
+        #self._remove_directory(directory)
+        print("Done with", tax_id)
 
         return tax_id, res
 
@@ -107,12 +108,15 @@ if __name__ == "__main__":
     metadata_df = pd.read_csv("./gtdb_utils/metadata_sample.csv")
     def fracMinHash(kmer_hash):
         hash = (976369 * kmer_hash + 1982627) % 10000
-        if hash < 100:
+        if hash < 1000:
             return True
         else:
             return False
     
-    si = SignatureIndex(fracMinHash, 12, kmer_file="/home/zhenhao/TDT/13-mer.pkl")
+    def all(kmer_hash):
+        return True
+    
+    si = SignatureIndex(all, 12, kmer_file="/home/zhenhao/TDT/12-mer.pkl")
     res = si.find_all_signatures(metadata_df, num_samples=200)
 
     with open("/home/zhenhao/TDT/signature.pkl", 'wb') as f:

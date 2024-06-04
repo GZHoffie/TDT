@@ -65,6 +65,7 @@ class FMHSignature(Signature):
         #signature_storage = [] # FOR DEBUG
 
         files = kwargs["files"]
+        #print(files)
 
         # Attempt: simply sum up all the signatures, take
         # the ones that are shared among 80% of the species
@@ -74,7 +75,7 @@ class FMHSignature(Signature):
             for record in SeqIO.parse(f, "fasta"):
                 sequences.append(str(record.seq))
             
-            signature = self._to_signature(sequences, data_type=np.int16)
+            signature = self.to_signature(sequences, data_type=np.int16)
             consensus_signature += signature
             #signature_storage.append(np.array(signature, dtype=bool)) # FOR DEBUG
         
@@ -214,7 +215,7 @@ if __name__ == "__main__":
 
     def fracMinHash(kmer_hash):
         hash = (976369 * kmer_hash + 1982627) % 10000
-        if hash < 100:
+        if hash < 1000:
             return True
         else:
             return False
@@ -222,12 +223,12 @@ if __name__ == "__main__":
     def all(kmer_hash):
         return True
         
-    sg = MLSignature(fracMinHash, 9)#, read_from_file="12-mer.pkl")
-    #sg.store_vocab("12-mer.pkl")
-    sg.find_consensus(positive_samples_training=glob.glob("./data/escherichia/*.fna"),
-                      negative_samples_training=glob.glob("./data/staphylococcus/*.fna"),
-                      positive_samples_test=glob.glob("./data/escherichia/*.fna"),
-                      negative_samples_test=glob.glob("./data/staphylococcus/*.fna"))
+    sg = MLSignature(fracMinHash, 12)#, read_from_file="12-mer.pkl")
+    sg.store_vocab("12-mer.pkl")
+    #sg.find_consensus(positive_samples_training=glob.glob("./data/escherichia/*.fna"),
+    #                  negative_samples_training=glob.glob("./data/staphylococcus/*.fna"),
+    #                  positive_samples_test=glob.glob("./data/escherichia/*.fna"),
+    #                  negative_samples_test=glob.glob("./data/staphylococcus/*.fna"))
     #print("562")
     #sg.insert_all_sequences_in_file("./data/562.fna")
     #print("564")
