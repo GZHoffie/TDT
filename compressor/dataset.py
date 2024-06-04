@@ -15,7 +15,7 @@ from Bio import SeqIO
 
 
 class RandomReadDataset(Dataset):
-    def __init__(self, positive_sample_files, negative_sample_files, vectorization_method, positive_rate=0.5, read_len=300, 
+    def __init__(self, positive_sample_files, negative_sample_files, vectorization_method, positive_rate=0.5, read_len=1000, 
                  num_reads_per_epoch=1000, random_errors=[0.01, 0.01, 0.01], random_reverse_complement=False, debug=False):
         """
         Randomly sample reads from the reference genomes.

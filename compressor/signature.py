@@ -1,5 +1,5 @@
 import pickle
-from compressor.utils import Seq2Tokens
+from compressor.vectorization import Seq2KMers
 import numpy as np
 from Bio import SeqIO
 from tqdm import tqdm
@@ -22,7 +22,7 @@ class FMHSignature(Signature):
     def __init__(self, condition_function, seed_length, window_length=None, read_from_file=None) -> None:
         super().__init__()
         self.con = condition_function
-        self.tokenizer = Seq2Tokens(seed_length, window_length)
+        self.tokenizer = Seq2KMers(seed_length, window_length)
         if read_from_file is None:
             self.kmer_dict, self.kmer_num = self.tokenizer.init_vocab(self.con)
         else:
@@ -30,7 +30,7 @@ class FMHSignature(Signature):
             
     
 
-    def to_signature(self, sequences, data_type=bool):
+    def to_signature(self, sequences, data_type=np.float32):
         signature = np.zeros(self.kmer_num, dtype=data_type)
         for sequence in sequences:
             kmers = self.tokenizer.canonical_kmers(sequence)
@@ -113,7 +113,7 @@ class MLSignature(FMHSignature):
     def find_consensus(self, **kwargs):
         positive_samples_training = kwargs["positive_samples_training"]
         negative_samples_training = kwargs["negative_samples_training"]
-        positive_samples_test = kwargs["negative_samples_test"]
+        positive_samples_test = kwargs["positive_samples_test"]
         negative_samples_test = kwargs["negative_samples_test"]
 
         # initialize model
@@ -218,9 +218,16 @@ if __name__ == "__main__":
             return True
         else:
             return False
+    
+    def all(kmer_hash):
+        return True
         
-    sg = FMHSignature(fracMinHash, 13)
-    sg.store_vocab("13-mer.pkl")
+    sg = MLSignature(fracMinHash, 9)#, read_from_file="12-mer.pkl")
+    #sg.store_vocab("12-mer.pkl")
+    sg.find_consensus(positive_samples_training=glob.glob("./data/escherichia/*.fna"),
+                      negative_samples_training=glob.glob("./data/staphylococcus/*.fna"),
+                      positive_samples_test=glob.glob("./data/escherichia/*.fna"),
+                      negative_samples_test=glob.glob("./data/staphylococcus/*.fna"))
     #print("562")
     #sg.insert_all_sequences_in_file("./data/562.fna")
     #print("564")

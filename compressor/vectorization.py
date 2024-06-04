@@ -165,7 +165,8 @@ class Seq2KMers:
         vocab_index = 0
         for i in tqdm(range(4 ** self._k), desc=f"[INFO]\t\tBuilding up vocabulary using {self._k}-mers"):
             kmer_sequence = [(i >> (j * 2)) & MASK for j in reversed(range(self._k))]
-            rev_comp_sequence = self._rev_comp(kmer_sequence)
+            #print(kmer_sequence)
+            rev_comp_sequence = self._rev_comp([kmer_sequence])[0]
 
             kmer_hash = 0
             rev_comp_hash = 0
