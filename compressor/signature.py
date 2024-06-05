@@ -223,7 +223,7 @@ if __name__ == "__main__":
     def all(kmer_hash):
         return True
         
-    sg = MLSignature(fracMinHash, 12)#, read_from_file="12-mer.pkl")
+    sg = MLSignature(all, 12)#, read_from_file="12-mer.pkl")
     sg.store_vocab("12-mer.pkl")
     #sg.find_consensus(positive_samples_training=glob.glob("./data/escherichia/*.fna"),
     #                  negative_samples_training=glob.glob("./data/staphylococcus/*.fna"),
